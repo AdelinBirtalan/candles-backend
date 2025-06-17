@@ -7,8 +7,7 @@ const productsFile = "./products.json";
 app.use(cors({ origin: "https://candleshome.netlify.app" }));
 app.use(express.json());
 
-// Get all products
-app.get("/api/products", async (req, res) => {
+app.get("/api/products", async (_, res) => {
   try {
     const products = JSON.parse(await fs.readFile(productsFile));
     res.json(products);
@@ -17,7 +16,6 @@ app.get("/api/products", async (req, res) => {
   }
 });
 
-// Add a product
 app.post("/api/products", async (req, res) => {
   try {
     const products = JSON.parse(await fs.readFile(productsFile));
@@ -30,7 +28,6 @@ app.post("/api/products", async (req, res) => {
   }
 });
 
-// Update a product
 app.put("/api/products/:id", async (req, res) => {
   try {
     const products = JSON.parse(await fs.readFile(productsFile));
@@ -46,7 +43,6 @@ app.put("/api/products/:id", async (req, res) => {
   }
 });
 
-// Delete a product
 app.delete("/api/products/:id", async (req, res) => {
   try {
     const products = JSON.parse(await fs.readFile(productsFile));
@@ -62,7 +58,7 @@ app.delete("/api/products/:id", async (req, res) => {
   }
 });
 
-app.get("/api/products/download", (req, res) => {
+app.get("/api/products/download", (_, res) => {
   res.download(productsFile);
 });
 
