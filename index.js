@@ -1,8 +1,6 @@
 const express = require("express");
-const cors = require("cors");
 const fs = require("fs").promises;
 const path = require("path");
-
 const app = express();
 const port = 5000;
 const productsFile = path.join(__dirname, "products.json");
