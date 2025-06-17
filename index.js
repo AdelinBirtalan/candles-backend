@@ -62,7 +62,6 @@ app.delete("/api/products/:id", async (req, res) => {
   }
 });
 
-// Backup endpoint
 app.get("/api/products/download", (req, res) => {
   res.download(productsFile);
 });
@@ -70,6 +69,6 @@ app.get("/api/products/download", (req, res) => {
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server running on port ${port}`));
 
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.send("Welcome to the Candles Home API!");
 });
