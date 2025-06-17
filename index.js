@@ -20,7 +20,6 @@ app.get("/api/products", (req, res) => {
       console.error("Error reading products.json:", err);
       return res.status(500).json({ error: "Failed to load products" });
     }
-
     const products = JSON.parse(data);
     res.json(products);
   });
