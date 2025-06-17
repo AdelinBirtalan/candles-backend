@@ -1,110 +1,70 @@
 const express = require("express");
-const fs = require("fs").promises;
-const path = require("path");
-const app = express();
-const port = 5000;
-const productsFile = path.join(__dirname, "products.json");
-
 const cors = require("cors");
-app.use(
-  cors({
-    origin: "https://candleshome.netlify.app",
-  })
-);
+const fs = require("fs");
+const path = require("path");
 
-// Helper to read products
-const readProducts = async () => {
-  const data = await fs.readFile(productsFile, "utf8");
-  return JSON.parse(data);
-};
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-// Helper to write products
-const writeProducts = async (products) => {
-  await fs.writeFile(productsFile, JSON.stringify(products, null, 2));
-};
+// Middleware
+app.use(cors());
+app.use(express.json()); // ✅ important: to parse JSON request bodies
 
-// Get all products
-app.get("/api/products", async (req, res) => {
-  try {
-    const products = await readProducts();
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ error: "Server error" });
-  }
-});
+// Path to the JSON file
+const productsPath = path.join(__dirname, "products.json");
 
-// Get single product by ID
-app.get("/api/products/:id", async (req, res) => {
-  try {
-    const products = await readProducts();
-    const product = products.find((p) => p.id === parseInt(req.params.id));
-    if (!product) return res.status(404).json({ error: "Product not found" });
-    res.json(product);
-  } catch (error) {
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
-// Add new product
-app.post("/api/products", async (req, res) => {
-  try {
-    const products = await readProducts();
-    const newProduct = {
-      id: products.length ? products[products.length - 1].id + 1 : 1,
-      title: req.body.title,
-      price: req.body.price,
-      description: req.body.description,
-      image: req.body.image,
-      stock: req.body.stock,
-    };
-    products.push(newProduct);
-    await writeProducts(products);
-    res.status(201).json(newProduct);
-  } catch (error) {
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
-// Update product
-app.put("/api/products/:id", async (req, res) => {
-  try {
-    const products = await readProducts();
-    const index = products.findIndex((p) => p.id === parseInt(req.params.id));
-    if (index === -1)
-      return res.status(404).json({ error: "Product not found" });
-    products[index] = {
-      ...products[index],
-      ...req.body,
-      id: parseInt(req.params.id),
-    };
-    await writeProducts(products);
-    res.json(products[index]);
-  } catch (error) {
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
-// Delete product
-app.delete("/api/products/:id", async (req, res) => {
-  try {
-    const products = await readProducts();
-    const filteredProducts = products.filter(
-      (p) => p.id !== parseInt(req.params.id)
-    );
-    if (products.length === filteredProducts.length) {
-      return res.status(404).json({ error: "Product not found" });
+// GET all products
+app.get("/api/products", (req, res) => {
+  fs.readFile(productsPath, "utf8", (err, data) => {
+    if (err) {
+      console.error("Error reading products.json:", err);
+      return res.status(500).json({ error: "Failed to load products" });
     }
-    await writeProducts(filteredProducts);
-    res.json({ message: "Product deleted" });
-  } catch (error) {
-    res.status(500).json({ error: "Server error" });
+
+    const products = JSON.parse(data);
+    res.json(products);
+  });
+});
+
+// POST a new product
+app.post("/api/products", (req, res) => {
+  const { title, price, description, image, stock } = req.body;
+
+  if (!title || !price || !description || !image || stock == null) {
+    return res.status(400).json({ error: "Missing required product fields." });
   }
+
+  fs.readFile(productsPath, "utf8", (err, data) => {
+    if (err) {
+      console.error("Error reading products.json:", err);
+      return res.status(500).json({ error: "Failed to load products" });
+    }
+
+    const products = JSON.parse(data);
+
+    const newProduct = {
+      id: Date.now().toString(),
+      title,
+      price,
+      description,
+      image,
+      stock,
+    };
+
+    products.push(newProduct);
+
+    fs.writeFile(productsPath, JSON.stringify(products, null, 2), (err) => {
+      if (err) {
+        console.error("Error writing products.json:", err);
+        return res.status(500).json({ error: "Failed to save product" });
+      }
+
+      res.status(201).json(newProduct);
+    });
+  });
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
-
-app.get("/", (req, res) => {
-  res.send("Backend is live 🚀");
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
