@@ -7,10 +7,6 @@ const app = express();
 const port = 5000;
 const productsFile = path.join(__dirname, "products.json");
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-
 const cors = require("cors");
 app.use(
   cors({
