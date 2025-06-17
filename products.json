@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "title": "Vanilla Glow",
+    "price": 15.99,
+    "description": "A soothing vanilla-scented candle.",
+    "image": "https://unsplash.com/photos/low-angle-photo-of-lightened-candles-fvl4b1gjpbk",
+    "stock": 2
+  },
+  {
+    "id": 2,
+    "title": "Lavender Bliss",
+    "price": 18.99,
+    "description": "Relax with this lavender candle.",
+    "image": "https://unsplash.com/photos/closeup-photo-of-lighted-tealight-candles-on-rack-IVDwedyOS3s",
+    "stock": 5
+  },
+  {
+    "id": 3,
+    "title": "Lumanare Parfumata faina",
+    "price": 20,
+    "description": "Lumanare faina",
+    "image": "https://unsplash.com/photos/low-angle-photo-of-lightened-candles-fvl4b1gjpbk",
+    "stock": 200
+  },
+  {
+    "id": 4,
+    "title": "Vanilla glow ",
+    "price": 213,
+    "description": "asdasd",
+    "image": "https://unsplash.com/photos/low-angle-photo-of-lightened-candles-fvl4b1gjpbk",
+    "stock": 223
+  }
+]
