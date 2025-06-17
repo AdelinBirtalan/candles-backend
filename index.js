@@ -11,6 +11,13 @@ const productsFile = path.join(__dirname, "products.json");
 app.use(cors());
 app.use(express.json());
 
+const cors = require("cors");
+app.use(
+  cors({
+    origin: "https://candleshome.netlify.app",
+  })
+);
+
 // Helper to read products
 const readProducts = async () => {
   const data = await fs.readFile(productsFile, "utf8");
@@ -102,4 +109,8 @@ app.delete("/api/products/:id", async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
+});
+
+app.get("/", (req, res) => {
+  res.send("Backend is live 🚀");
 });
